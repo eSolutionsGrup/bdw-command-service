@@ -1,5 +1,8 @@
 package ro.esolutions.bdw.command;
 
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -10,11 +13,11 @@ import ro.esolutions.bdw.config.KafkaGateway;
 public class CommandRequestHandler {
 
     @Autowired
-    private KafkaGateway kafkaGateway;
+    private MqttClient mqttClient;
 
     @StreamListener("command")
-    public void commandReceived(@Payload Command command) {
+    public void commandReceived(@Payload Command command) throws MqttException {
         System.out.println("received kafka command: $command");
-        kafkaGateway.sendCommandResponse(new CommandResponse(command.uid));
+        mqttClient.publish("/command", new MqttMessage(command.uid.getBytes()));
     }
 }
