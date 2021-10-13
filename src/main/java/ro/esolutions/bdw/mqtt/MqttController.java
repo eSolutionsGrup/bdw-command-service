@@ -21,6 +21,7 @@ public class MqttController {
     @PostConstruct
     public void init() throws MqttException {
         mqttClient.subscribe("/command-response", (topic, msg) -> {
+            System.out.println("received command response:" + msg);
             kafkaGateway.sendCommandResponse(new CommandResponse(msg.toString()));
         });
     }

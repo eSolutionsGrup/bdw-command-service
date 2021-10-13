@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-import ro.esolutions.bdw.config.KafkaGateway;
 
 @Service
 public class CommandRequestHandler {
@@ -17,7 +16,7 @@ public class CommandRequestHandler {
 
     @StreamListener("command")
     public void commandReceived(@Payload Command command) throws MqttException {
-        System.out.println("received kafka command: $command");
+        System.out.println("received kafka command:" + command.uid);
         mqttClient.publish("/command", new MqttMessage(command.uid.getBytes()));
     }
 }
